@@ -69,15 +69,36 @@ body{
   margin:0;font-family:var(--font);
   background:
     radial-gradient(1100px 620px at 15% -12%, var(--bg-glow) 0%, transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(var(--rgb-accent),.10) 0%, transparent 45%),
+    radial-gradient(900px 500px at 100% 0%, rgba(var(--rgb-accent2),.18) 0%, transparent 45%),
     var(--bg);
   background-attachment:fixed;
   color:var(--text);
-  transition:background-color .3s var(--ease), color .3s var(--ease);
+  transition:background-color .3s var(--ease), color .3s var(--ease), background .4s var(--ease);
   -webkit-font-smoothing:antialiased;
 }
 a{color:var(--accent);}
 ::selection{background:rgba(var(--rgb-accent),.35);}
+
+/* Ambient depth — one very soft, slow-drifting glow behind everything.
+   Purely decorative (no content, no interaction), kept low-opacity and
+   slow so it reads as quiet depth rather than a distracting animation,
+   and respects reduced-motion preferences. */
+body::before{
+  content:'';position:fixed;inset:-20%;z-index:-1;pointer-events:none;
+  background:radial-gradient(600px 600px at 20% 20%, rgba(var(--rgb-accent),.22), transparent 60%),
+             radial-gradient(500px 500px at 85% 75%, rgba(var(--rgb-accent2),.16), transparent 60%);
+  animation:orcaAmbientDrift 26s ease-in-out infinite alternate;
+  transition:background .4s var(--ease);
+}
+@keyframes orcaAmbientDrift{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(2%,-2%) scale(1.05);}
+}
+@media (prefers-reduced-motion: reduce){
+  body::before{animation:none;}
+  .page.active, .modal, .quick-menu.open, .chat-panel.open{animation:none;}
+  .card, .btn, .icon-btn{transition:none;}
+}
 
 /* ---- scrollbars: slim, unobtrusive, theme-aware ---- */
 *{scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent;}
@@ -88,15 +109,18 @@ a{color:var(--accent);}
 /* ============== TOPBAR ============== */
 .topbar{
   display:flex;align-items:center;justify-content:space-between;padding:12px 22px;
-  background:rgba(var(--rgb-panel-solid),.78);
+  background:
+    linear-gradient(rgba(var(--rgb-accent),.05), rgba(var(--rgb-accent),.05)),
+    rgba(var(--rgb-panel-solid),.78);
   backdrop-filter:blur(var(--blur)) saturate(180%); -webkit-backdrop-filter:blur(var(--blur)) saturate(180%);
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid rgba(var(--rgb-accent),.22);
   position:sticky;top:0;z-index:900;flex-wrap:nowrap;gap:8px;
   box-shadow:0 1px 0 rgba(0,0,0,.02);
+  transition:background .3s var(--ease), border-color .3s var(--ease);
 }
 .brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;letter-spacing:-.2px;flex:0 0 auto;}
 .brand .emoji{font-size:22px;}
-nav{display:flex;gap:4px;flex-wrap:nowrap;flex:1 1 auto;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;background:var(--panel2);padding:4px;border-radius:var(--r-pill);border:1px solid var(--border);}
+nav{display:flex;gap:4px;flex-wrap:nowrap;flex:1 1 auto;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;background:rgba(var(--rgb-accent),.07);padding:4px;border-radius:var(--r-pill);border:1px solid rgba(var(--rgb-accent),.18);transition:background .3s var(--ease), border-color .3s var(--ease);}
 nav::-webkit-scrollbar{display:none;height:0;}
 nav button{background:transparent;border:none;color:var(--muted);padding:8px 15px;border-radius:var(--r-pill);cursor:pointer;font-size:13.5px;font-weight:600;transition:color .18s var(--ease),background .18s var(--ease);white-space:nowrap;flex:0 0 auto;font-family:inherit;}
 nav button:hover{color:var(--text);}
@@ -108,7 +132,10 @@ nav button.active{color:var(--accent-text);background:var(--accent);box-shadow:v
   display:flex;align-items:center;justify-content:center;flex:0 0 auto;
   transition:background .15s var(--ease), border-color .15s var(--ease), transform .1s var(--ease);
 }
-.icon-btn:hover{border-color:var(--border-strong);background:var(--icon-hover-bg);}
+.icon-btn:hover{border-color:rgba(var(--rgb-accent),.4);background:rgba(var(--rgb-accent),.14);}
+@media (hover:hover) and (pointer:fine){
+  .icon-btn:hover{transform:scale(1.08);}
+}
 .icon-btn:active{transform:scale(.93);}
 .icon-btn:disabled{opacity:.4;cursor:not-allowed;}
 .icon-btn.active{background:rgba(var(--rgb-accent),.16);border-color:rgba(var(--rgb-accent),.5);color:var(--accent);}
@@ -124,17 +151,22 @@ nav button.active{color:var(--accent-text);background:var(--accent);box-shadow:v
 
 .wrap{max-width:1500px;margin:0 auto;padding:22px;}
 .page{display:none;}
-.page.active{display:block;animation:fade .3s var(--ease);}
-@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.page.active{display:block;animation:fade .35s var(--ease);}
+@keyframes fade{from{opacity:0;transform:translateY(10px) scale(.99);}to{opacity:1;transform:translateY(0) scale(1);}}
 
 /* ============== SURFACES: glass cards & panels ============== */
 .card{
   background:var(--panel);
   backdrop-filter:blur(var(--blur)) saturate(160%); -webkit-backdrop-filter:blur(var(--blur)) saturate(160%);
-  border:1px solid var(--border);border-radius:var(--r-xl);padding:20px;
+  border:1px solid rgba(var(--rgb-accent),.13);border-radius:var(--r-xl);padding:20px;
   box-shadow:var(--shadow-md), var(--shadow-inset);
   margin-bottom:18px;position:relative;z-index:1;
-  transition:background-color .3s var(--ease), border-color .3s var(--ease);
+  transition:background-color .3s var(--ease), border-color .3s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+/* Subtle depth lift on hover — pointer devices only, so touch/mobile never
+   gets a stuck "hover" state after a tap. */
+@media (hover:hover) and (pointer:fine){
+  .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg), var(--shadow-inset);}
 }
 .card h2{margin:0 0 16px;font-size:17px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:9px;}
 .card h3{font-size:14px;font-weight:700;margin:18px 0 8px;letter-spacing:-.1px;}
@@ -149,6 +181,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 
 textarea{resize:vertical;min-height:50px;font-family:inherit;}
 .row{display:flex;gap:8px;}
 
+/* ============== ACCENT COLOR SWATCHES (Part 12) ============== */
+.accent-swatch-row{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 4px;}
+.accent-swatch{
+  width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;
+  box-shadow:0 2px 6px rgba(0,0,0,.25), var(--shadow-inset);
+  transition:transform .15s var(--ease), border-color .15s var(--ease);
+}
+.accent-swatch:hover{transform:scale(1.12);}
+.accent-swatch:active{transform:scale(.95);}
+.accent-swatch.selected{border-color:var(--text);box-shadow:0 0 0 3px var(--panel2-solid), 0 0 0 5px var(--text), 0 2px 6px rgba(0,0,0,.25);}
+
 /* ============== BUTTONS ============== */
 .btn{
   background:var(--accent);color:var(--accent-text);border:none;padding:11px 18px;border-radius:var(--r-sm);
@@ -156,8 +199,8 @@ textarea{resize:vertical;min-height:50px;font-family:inherit;}
   transition:filter .15s var(--ease), transform .1s var(--ease), box-shadow .15s var(--ease);
   box-shadow:0 3px 10px rgba(var(--rgb-accent),.32);
 }
-.btn:hover{filter:brightness(1.08);}
-.btn:active{transform:scale(.98);}
+.btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn:active{transform:scale(.98) translateY(0);}
 .btn:disabled{opacity:.55;cursor:wait;filter:none;transform:none;}
 .btn.block{width:100%;margin-top:10px;}
 .btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border);box-shadow:none;}
@@ -314,7 +357,15 @@ td:first-child,th:first-child{text-align:left;color:var(--muted);}
   background:rgba(var(--rgb-panel-solid),.92);backdrop-filter:blur(24px) saturate(180%);
   border:1px solid var(--border);border-radius:var(--r-xl);padding:26px;max-width:460px;width:100%;
   box-shadow:var(--shadow-lg);position:relative;max-height:88vh;overflow-y:auto;
-  animation:orcaPopIn .2s var(--ease);
+  animation:orcaModalIn .28s var(--ease);
+  transform-style:preserve-3d;perspective:900px;
+}
+/* A gentle 3D "settle" — tilts in from a shallow angle rather than just
+   scaling, for the depth/polish the redesign asked for. Kept short and
+   subtle so it never feels gimmicky or slows anyone down. */
+@keyframes orcaModalIn{
+  from{opacity:0;transform:perspective(900px) rotateX(8deg) scale(.94) translateY(16px);}
+  to{opacity:1;transform:perspective(900px) rotateX(0) scale(1) translateY(0);}
 }
 .modal .close{position:absolute;top:18px;right:18px;background:var(--panel2);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;color:var(--muted);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .modal .close:hover{color:var(--text);}

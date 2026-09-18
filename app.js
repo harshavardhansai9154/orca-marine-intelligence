@@ -132,12 +132,12 @@ Object.assign(I18N.kn, {"air_temp": "ಗಾಳಿಯ ಉಷ್ಣತೆ", "rain"
 Object.assign(I18N.ml, {"air_temp": "വായു താപനില", "rain": "മഴ", "not_applicable": "ബാധകമല്ല", "freshwater_badge": "ശുദ്ധജല സ്ഥലം", "freshwater_note": "ശുദ്ധജല ജലാശയം — മത്സ്യബന്ധന സ്കോർ ഒരു അനുകരണ എസ്റ്റിമേറ്റ് ആണ്, ഉപഗ്രഹം വഴി അളന്നതല്ല. ഇവിടെ സാധാരണയായി വളർത്തുന്ന ഇനങ്ങൾ: രോഹു, കട്‌ല, മൃഗാൽ, കോമൺ കാർപ്പ്."});
 
 // Part 11: topbar quick-toggle tooltips (voice alerts on/off, light/dark theme).
-Object.assign(I18N.en, {"voice_on_title": "Voice alerts: ON (tap to mute)", "voice_off_title": "Voice alerts: OFF (tap to unmute)", "theme_light_title": "Switch to dark theme", "theme_dark_title": "Switch to light theme", "settings_theme": "Appearance", "theme_dark_opt": "Dark", "theme_light_opt": "Light"});
-Object.assign(I18N.hi, {"voice_on_title": "आवाज़ अलर्ट: चालू (म्यूट करने के लिए टैप करें)", "voice_off_title": "आवाज़ अलर्ट: बंद (अनम्यूट करने के लिए टैप करें)", "theme_light_title": "डार्क थीम पर स्विच करें", "theme_dark_title": "लाइट थीम पर स्विच करें", "settings_theme": "रूप", "theme_dark_opt": "डार्क", "theme_light_opt": "लाइट"});
-Object.assign(I18N.ta, {"voice_on_title": "குரல் எச்சரிக்கைகள்: இயக்கத்தில் (முடக்க தட்டவும்)", "voice_off_title": "குரல் எச்சரிக்கைகள்: முடக்கப்பட்டது (இயக்க தட்டவும்)", "theme_light_title": "இருண்ட தீம்-க்கு மாறவும்", "theme_dark_title": "வெளிர் தீம்-க்கு மாறவும்", "settings_theme": "தோற்றம்", "theme_dark_opt": "இருண்ட", "theme_light_opt": "வெளிர்"});
-Object.assign(I18N.te, {"voice_on_title": "వాయిస్ అలర్ట్‌లు: ఆన్ (మ్యూట్ చేయడానికి నొక్కండి)", "voice_off_title": "వాయిస్ అలర్ట్‌లు: ఆఫ్ (అన్‌మ్యూట్ చేయడానికి నొక్కండి)", "theme_light_title": "డార్క్ థీమ్‌కు మారండి", "theme_dark_title": "లైట్ థీమ్‌కు మారండి", "settings_theme": "రూపం", "theme_dark_opt": "డార్క్", "theme_light_opt": "లైట్"});
-Object.assign(I18N.kn, {"voice_on_title": "ಧ್ವನಿ ಎಚ್ಚರಿಕೆಗಳು: ಆನ್ (ಮ್ಯೂಟ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ)", "voice_off_title": "ಧ್ವನಿ ಎಚ್ಚರಿಕೆಗಳು: ಆಫ್ (ಅನ್‌ಮ್ಯೂಟ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ)", "theme_light_title": "ಡಾರ್ಕ್ ಥೀಮ್‌ಗೆ ಬದಲಿಸಿ", "theme_dark_title": "ಲೈಟ್ ಥೀಮ್‌ಗೆ ಬದಲಿಸಿ", "settings_theme": "ಗೋಚರತೆ", "theme_dark_opt": "ಡಾರ್ಕ್", "theme_light_opt": "ಲೈಟ್"});
-Object.assign(I18N.ml, {"voice_on_title": "ശബ്ദ അലേർട്ടുകൾ: ഓൺ (മ്യൂട്ട് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക)", "voice_off_title": "ശബ്ദ അലേർട്ടുകൾ: ഓഫ് (അൺമ്യൂട്ട് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക)", "theme_light_title": "ഡാർക്ക് തീമിലേക്ക് മാറുക", "theme_dark_title": "ലൈറ്റ് തീമിലേക്ക് മാറുക", "settings_theme": "രൂപഭാവം", "theme_dark_opt": "ഡാർക്ക്", "theme_light_opt": "ലൈറ്റ്"});
+Object.assign(I18N.en, {"voice_on_title": "Voice alerts: ON (tap to mute)", "voice_off_title": "Voice alerts: OFF (tap to unmute)", "theme_light_title": "Switch to dark theme", "theme_dark_title": "Switch to light theme", "settings_theme": "Appearance", "theme_dark_opt": "Dark", "theme_light_opt": "Light", "settings_accent": "Accent Color"});
+Object.assign(I18N.hi, {"voice_on_title": "आवाज़ अलर्ट: चालू (म्यूट करने के लिए टैप करें)", "voice_off_title": "आवाज़ अलर्ट: बंद (अनम्यूट करने के लिए टैप करें)", "theme_light_title": "डार्क थीम पर स्विच करें", "theme_dark_title": "लाइट थीम पर स्विच करें", "settings_theme": "रूप", "theme_dark_opt": "डार्क", "theme_light_opt": "लाइट", "settings_accent": "एक्सेंट रंग"});
+Object.assign(I18N.ta, {"voice_on_title": "குரல் எச்சரிக்கைகள்: இயக்கத்தில் (முடக்க தட்டவும்)", "voice_off_title": "குரல் எச்சரிக்கைகள்: முடக்கப்பட்டது (இயக்க தட்டவும்)", "theme_light_title": "இருண்ட தீம்-க்கு மாறவும்", "theme_dark_title": "வெளிர் தீம்-க்கு மாறவும்", "settings_theme": "தோற்றம்", "theme_dark_opt": "இருண்ட", "theme_light_opt": "வெளிர்", "settings_accent": "தீம் நிறம்"});
+Object.assign(I18N.te, {"voice_on_title": "వాయిస్ అలర్ట్‌లు: ఆన్ (మ్యూట్ చేయడానికి నొక్కండి)", "voice_off_title": "వాయిస్ అలర్ట్‌లు: ఆఫ్ (అన్‌మ్యూట్ చేయడానికి నొక్కండి)", "theme_light_title": "డార్క్ థీమ్‌కు మారండి", "theme_dark_title": "లైట్ థీమ్‌కు మారండి", "settings_theme": "రూపం", "theme_dark_opt": "డార్క్", "theme_light_opt": "లైట్", "settings_accent": "థీమ్ రంగు"});
+Object.assign(I18N.kn, {"voice_on_title": "ಧ್ವನಿ ಎಚ್ಚರಿಕೆಗಳು: ಆನ್ (ಮ್ಯೂಟ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ)", "voice_off_title": "ಧ್ವನಿ ಎಚ್ಚರಿಕೆಗಳು: ಆಫ್ (ಅನ್‌ಮ್ಯೂಟ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ)", "theme_light_title": "ಡಾರ್ಕ್ ಥೀಮ್‌ಗೆ ಬದಲಿಸಿ", "theme_dark_title": "ಲೈಟ್ ಥೀಮ್‌ಗೆ ಬದಲಿಸಿ", "settings_theme": "ಗೋಚರತೆ", "theme_dark_opt": "ಡಾರ್ಕ್", "theme_light_opt": "ಲೈಟ್", "settings_accent": "ಥೀಮ್ ಬಣ್ಣ"});
+Object.assign(I18N.ml, {"voice_on_title": "ശബ്ദ അലേർട്ടുകൾ: ഓൺ (മ്യൂട്ട് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക)", "voice_off_title": "ശബ്ദ അലേർട്ടുകൾ: ഓഫ് (അൺമ്യൂട്ട് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക)", "theme_light_title": "ഡാർക്ക് തീമിലേക്ക് മാറുക", "theme_dark_title": "ലൈറ്റ് തീമിലേക്ക് മാറുക", "settings_theme": "രൂപഭാവം", "theme_dark_opt": "ഡാർക്ക്", "theme_light_opt": "ലൈറ്റ്", "settings_accent": "തീം നിറം"});
 
 // Part 11: 5-stage Agent Activity panel (grouped from the 9 existing
 // rule-based steps — display only) + honest per-stage trust pills.
@@ -1206,6 +1206,8 @@ if(settings.shareLocation===undefined) settings.shareLocation = false;
 // Part 11: macOS-style redesign — dark stays the default (glare/night use at
 // sea), light is opt-in via the topbar toggle or Settings.
 if(settings.theme===undefined) settings.theme = 'dark';
+// Part 12: user-chosen accent color (macOS System-Settings-style swatches).
+if(settings.accentColor===undefined) settings.accentColor = 'blue';
 function saveSettings(){ localStorage.setItem('orcaSettings', JSON.stringify(settings)); }
 function currentRadiusKm(){
   const el = document.getElementById('radiusInput');
@@ -2388,6 +2390,51 @@ function speak(text){
 function applyTheme(){
   document.documentElement.setAttribute('data-theme', settings.theme==='light' ? 'light' : 'dark');
 }
+
+// Part 12: user-chosen accent color, macOS System-Settings-style. Purely a
+// re-tint of the --accent/--accent2 design tokens (and their precomputed
+// --rgb-* triplets, since style.css avoids color-mix() for old-Android
+// safety — see the big comment near the top of style.css) — never touches
+// map colors, zone status colors, or any geographic/scoring logic.
+const ACCENT_PRESETS = [
+  {key:'blue',   label:'Blue',    accent:'#0a84ff', accent2:'#40a6ff'},
+  {key:'purple', label:'Purple',  accent:'#8b5cf6', accent2:'#a78bfa'},
+  {key:'pink',   label:'Pink',    accent:'#ff375f', accent2:'#ff7a9c'},
+  {key:'red',    label:'Red',     accent:'#ff453a', accent2:'#ff7a70'},
+  {key:'orange', label:'Orange',  accent:'#ff9f0a', accent2:'#ffbb54'},
+  {key:'green',  label:'Green',   accent:'#30d158', accent2:'#68e685'},
+  {key:'teal',   label:'Teal',    accent:'#32ade6', accent2:'#6cc9f0'},
+  {key:'graphite', label:'Graphite', accent:'#8e8e93', accent2:'#aeaeb2'}
+];
+function hexToRgbTriplet(hex){
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if(!m) return '10,132,255';
+  return `${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)}`;
+}
+function applyAccentColor(){
+  const preset = ACCENT_PRESETS.find(p=>p.key===settings.accentColor) || ACCENT_PRESETS[0];
+  const root = document.documentElement.style;
+  root.setProperty('--accent', preset.accent);
+  root.setProperty('--accent2', preset.accent2);
+  root.setProperty('--rgb-accent', hexToRgbTriplet(preset.accent));
+  root.setProperty('--rgb-accent2', hexToRgbTriplet(preset.accent2));
+}
+function renderAccentSwatches(){
+  const row = document.getElementById('accentSwatchRow');
+  if(!row) return;
+  row.innerHTML = ACCENT_PRESETS.map(p=>`
+    <button type="button" class="accent-swatch${settings.accentColor===p.key?' selected':''}"
+      style="background:${p.accent};" data-accent="${p.key}" title="${p.label}" aria-label="${p.label}"></button>
+  `).join('');
+  row.querySelectorAll('.accent-swatch').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      settings.accentColor = btn.getAttribute('data-accent');
+      saveSettings();
+      applyAccentColor();
+      renderAccentSwatches();
+    });
+  });
+}
 function updateThemeToggleBtn(){
   const b = document.getElementById('themeToggleBtn');
   if(!b) return;
@@ -3031,6 +3078,7 @@ document.getElementById('settingsBtn').addEventListener('click', ()=>{
   document.getElementById('chkBorderAlerts').checked = settings.borderAlerts;
   document.getElementById('chkVoiceAlerts').checked = settings.voiceAlerts;
   if(document.getElementById('themeSelect')) document.getElementById('themeSelect').value = settings.theme;
+  renderAccentSwatches();
   document.getElementById('thWarning').value = settings.warningKm;
   document.getElementById('thHigh').value = settings.highKm;
   document.getElementById('thCritical').value = settings.criticalKm;
@@ -3149,6 +3197,7 @@ populateSpeciesSelect();
 document.getElementById('radiusInput').value = settings.searchRadiusKm;
 document.getElementById('zoneCountInput').value = settings.zoneCount;
 applyTheme();
+applyAccentColor();
 applyI18n();
 updateVoiceToggleBtn();
 updateThemeToggleBtn();
