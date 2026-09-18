@@ -1,0 +1,16 @@
+# Secrets — never commit your real Groq key
+backend/.env
+
+# Local runtime data (the nearby-fishermen presence DB, regenerated automatically)
+backend/orca_data.db
+backend/orca_data.db-journal
+
+# Python
+backend/__pycache__/
+backend/*.pyc
+backend/.venv/
+backend/venv/
+
+# OS cruft
+.DS_Store
+Thumbs.db

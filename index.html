@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>ORCA — Marine Intelligence & Fisherman Safety</title>
+<meta name="description" content="ORCA Marine Intelligence: real-time fishing zone recommendations, weather and wave conditions, and maritime border safety alerts for fishermen along the Indian coast.">
+<meta name="keywords" content="fishing zones, PFZ, potential fishing zone, fisherman safety app, maritime border alert, marine weather India, INCOIS, coastal safety, ocean intelligence">
+<meta name="author" content="ORCA Marine Intelligence">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://harshavardhansai9154.github.io/orca-marine-intelligence/">
+
+<!-- Open Graph / social preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="ORCA — Marine Intelligence & Fisherman Safety">
+<meta property="og:description" content="Real-time fishing zone recommendations, weather and wave conditions, and maritime border safety alerts for fishermen.">
+<meta property="og:image" content="icons/icon-512.png">
+<meta property="og:url" content="https://harshavardhansai9154.github.io/orca-marine-intelligence/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ORCA — Marine Intelligence & Fisherman Safety">
+<meta name="twitter:description" content="Real-time fishing zone, weather, and maritime border safety intelligence for fishermen.">
+<meta name="twitter:image" content="icons/icon-512.png">
+
+<!-- PWA / installable app -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1120">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ORCA">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="emoji">🐋</span><span data-i18n="brand">ORCA Marine Intelligence</span></div>
+  <nav id="mainNav">
+    <button data-page="dashboard" class="active" data-i18n="nav_dashboard">Dashboard</button>
+    <button data-page="agents" data-i18n="nav_agents">Agent Activity</button>
+    <button data-page="tripplanner" data-i18n="nav_tripplanner">Trip Planner</button>
+    <button data-page="compare" data-i18n="nav_compare">Compare Zones</button>
+    <button data-page="safety" data-i18n="nav_safety">Safety & Route</button>
+    <button data-page="alerts" data-i18n="nav_alerts">Alerts</button>
+    <button data-page="species" data-i18n="nav_species">Species Intelligence</button>
+    <button data-page="sources" data-i18n="nav_sources">Data Sources</button>
+  </nav>
+  <div class="topbar-right">
+    <div class="quick-menu-wrap">
+      <button class="icon-btn" id="menuBtn" title="Menu">☰</button>
+      <div class="quick-menu" id="quickMenu">
+        <button data-quick="border">🛡️ <span data-i18n="nav_border">Border Intelligence</span></button>
+        <button data-quick="cyclone">🌀 <span data-i18n="nav_cyclone">Cyclone Intel</span></button>
+        <button data-quick="sources">📚 <span data-i18n="nav_sources">Data Sources</span></button>
+      </div>
+    </div>
+    <button class="emg-btn" id="emgBtn" data-i18n="emg_btn">🚨 SIMULATE EMERGENCY</button>
+    <button class="icon-btn" id="voiceToggleBtn" title="Voice alerts">🔇</button>
+    <button class="icon-btn" id="themeToggleBtn" title="Light / dark theme">🌙</button>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="card">
+    <h2>🐋 <span data-i18n="assistant_title">ORCA Assistant & Marine Map</span></h2>
+
+    <div class="dash-row">
+      <div class="dash-assistant">
+        <label data-i18n="lbl_location">Fisherman location</label>
+        <div class="row" style="gap:6px;">
+          <input type="text" id="locInput" list="townList" data-i18n-ph="ph_location" placeholder="Enter any coastal place name, or lat,lon" style="flex:1;">
+          <button class="icon-btn" id="micBtnLoc" title="Voice input">🎤</button>
+        </div>
+        <div class="hint" id="voiceHintLoc" style="margin-top:4px;"></div>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn secondary" style="flex:1;" id="searchBtn">🔎 <span data-i18n="btn_search">Search</span></button>
+        </div>
+        <button class="btn secondary block" id="gpsBtn">📍 <span data-i18n="btn_gps">Use My Location</span></button>
+        <div class="row" style="margin-top:8px;gap:8px;">
+          <div style="flex:1;">
+            <label data-i18n="lbl_radius">Search radius (km)</label>
+            <input type="number" id="radiusInput" min="2" max="100" step="1" value="20">
+          </div>
+          <div style="flex:1;">
+            <label data-i18n="lbl_zonecount">Number of zones</label>
+            <input type="number" id="zoneCountInput" min="1" max="12" step="1" value="5">
+          </div>
+        </div>
+        <div class="hint" data-i18n="hint_click">Click anywhere on the map to select your location, or type any place name and press Search.</div>
+        <button class="btn block" id="analyzeBtn">🔮 <span data-i18n="btn_analyze">ORCA ANALYZE</span></button>
+        <div class="hint" id="outOfRangeHint" style="color:var(--orange);font-weight:600;"></div>
+        <div id="findingBox"></div>
+
+        <div class="hint" style="margin-top:14px;" data-i18n="hint_pin_mode">Tap "Add Pin" then tap the map to mark multiple spots for comparison.</div>
+        <button class="btn secondary block" id="pinModeBtn">📍 <span data-i18n="btn_pin_mode">Add Pin</span></button>
+        <div id="pinnedListBox" style="margin-top:8px;"></div>
+      </div>
+      <div class="dash-mapcol">
+        <div class="map-stack">
+          <div id="map"></div>
+          <canvas id="windCanvas" class="wind-canvas"></canvas>
+        </div>
+        <div class="legend">
+          <span><span class="dot green"></span><span data-i18n="legend_green">Green = good</span></span>
+          <span><span class="dot yellow"></span><span data-i18n="legend_yellow">Yellow = changing</span></span>
+          <span><span class="dot red"></span><span data-i18n="legend_red">Red = avoid</span></span>
+          <span><span class="dot blue"></span><span data-i18n="legend_blue">Blue = fisherman</span></span>
+          <span><span class="ln" style="border-color:#ef4444;"></span><span data-i18n="legend_maritime">Sri Lanka maritime boundary</span></span>
+          <span><span class="ln" style="border-color:#a78bfa;"></span><span data-i18n="legend_state">State boundary</span></span>
+          <span><span class="ln" style="border-color:#eab308;"></span><span data-i18n="legend_ring_warn">Yellow ring = border caution</span></span>
+          <span><span class="ln" style="border-color:#f97316;"></span><span data-i18n="legend_ring_high">Orange ring = high warning</span></span>
+          <span><span class="ln" style="border-color:#ef4444;"></span><span data-i18n="legend_ring_crit">Red ring = critical</span></span>
+          <span>💨 <span data-i18n="legend_wind">Wind flow (approx., same data as zone wind)</span></span>
+          <span>⚓ <span data-i18n="legend_harbor">Known fishing harbor (reference)</span></span>
+          <span><span class="dot" style="background:#38bdf8;"></span><span data-i18n="legend_lake">Lake / reservoir (freshwater)</span></span>
+          <span><span class="ln" style="border-color:#38bdf8;"></span><span data-i18n="legend_river">River (freshwater)</span></span>
+          <span><span class="ln" style="border-color:#eab308;border-top-style:dashed;"></span><span data-i18n="legend_expand">Yellow dashed = search auto-expanded</span></span>
+        </div>
+        <div class="fishermen-controls">
+          <label class="fishermen-toggle"><input type="checkbox" id="chkShowFishermen"> 🚤 <span data-i18n="chk_show_fishermen">Show Other Fishermen</span></label>
+          <button class="icon-btn" id="refreshFishermenBtn" title="Refresh nearby fishermen">🔄</button>
+        </div>
+        <div class="hint" id="fishermenHint" style="margin-top:2px;"></div>
+        <div class="hint" id="borderMiniStatus" style="font-weight:600;margin-top:6px;"></div>
+        <div class="hint" id="nearestHarborHint" style="margin-top:2px;"></div>
+        <div class="hint" id="waterTypeHint" style="margin-top:2px;font-weight:600;"></div>
+        <div class="hint" id="radiusExpandHint" style="margin-top:2px;color:#eab308;font-weight:600;"></div>
+        <!-- Borders/wind/harbors/water-body layers are always shown now — the
+             show/hide checkboxes were cluttering the map controls, so these
+             stay checked and hidden rather than removing the toggle logic. -->
+        <div style="display:none;">
+          <input type="checkbox" id="chkShowBorders" checked>
+          <input type="checkbox" id="chkShowWind" checked>
+          <input type="checkbox" id="chkShowHarbors" checked>
+          <input type="checkbox" id="chkShowWaterBodies" checked>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marine Status + Zone Intelligence combined into one compact card, and
+       Border Marine Intelligence beside it — both share the single Dashboard
+       map above rather than each drawing their own map. Cyclone Intelligence
+       is a full-width card below both, and Talk to ORCA lives in the single
+       floating chat widget rather than duplicated on this page. -->
+  <div class="dash-two-col" style="margin-top:16px;">
+    <div class="card" id="statusZoneCard">
+      <h2>⚠️ <span data-i18n="status_title">Marine Status</span></h2>
+      <div class="status-strip" id="statusBox"></div>
+      <div class="hint" style="margin-top:6px" data-i18n="hint_status">Reflects the currently selected / recommended zone only.</div>
+
+      <h3>🎣 <span data-i18n="zoneintel_title">Nearby Fishing Zones</span></h3>
+      <div class="hint" id="zoneRangeHintDash" data-i18n="zoneintel_hint">All nearby fishing zones within the 20 km search range, evaluated independently.</div>
+      <div class="hint" id="liveDataHint" style="color:var(--accent);"></div>
+      <div class="zone-list-compact" id="zoneGridDash"></div>
+
+      <button class="btn block" id="goToCompareBtn" style="margin-top:16px;">⚖️ <span data-i18n="nav_compare">Compare Zones</span></button>
+    </div>
+
+    <div class="card" id="borderCard">
+      <h2>🛡️ <span data-i18n="border_title">Border & Maritime Intelligence</span></h2>
+
+      <div id="borderHero" class="hero-banner safe" style="margin-top:12px;"><div class="hero-icon">🟢</div><div><div class="hero-text" id="heroText">—</div><div class="hero-sub" id="heroSub"></div></div></div>
+      <ul class="tip-list" id="borderTips"></ul>
+
+      <div class="row" style="margin-top:10px;flex-wrap:wrap;gap:10px;">
+        <button class="btn secondary" id="liveToggleBtn">📍 <span id="liveToggleLabel" data-i18n="btn_live_off">Start Live Tracking</span></button>
+        <button class="btn secondary" id="demoMoveBtn">▶ <span data-i18n="btn_demo_move">Simulate Approach</span></button>
+        <button class="btn secondary" id="returnRouteBtn">🧭 <span data-i18n="btn_return">Suggest Return Route</span></button>
+      </div>
+      <div class="hint" style="margin-top:8px;">
+        📍 <span data-i18n="live_lat">Latitude</span>: <b id="liveLat">—</b> &nbsp;
+        <span data-i18n="live_lon">Longitude</span>: <b id="liveLon">—</b> &nbsp;
+        <span data-i18n="live_acc">GPS Accuracy</span>: <b id="liveAcc">—</b> &nbsp;
+        <span data-i18n="live_update">Last Update</span>: <b id="liveTime">—</b>
+      </div>
+
+      <h3>📋 <span data-i18n="border_status_title">Details</span></h3>
+      <div class="status-strip" id="borderStatusBox"></div>
+
+      <h3>👪 <span data-i18n="family_log_title">Family Alert Log</span></h3>
+      <div class="hint" data-i18n="family_log_hint">Alert log only — no real SMS or call is sent from this app yet.</div>
+      <div class="family-log" id="familyLog"></div>
+    </div>
+  </div>
+
+  <div class="card" id="cycloneCard" style="margin-top:16px;">
+    <h2>🌀 <span data-i18n="cyclone_title">Cyclone Intelligence</span></h2>
+    <div class="hint" data-i18n="cyclone_hint">A heuristic risk estimate from live wind, pressure and wave data — not a live cyclone tracker. For official cyclone warnings on Indian coasts, always check IMD (mausam.imd.gov.in) and INCOIS (incois.gov.in) directly.</div>
+    <div id="cycloneBox" style="margin-top:14px;"></div>
+  </div>
+
+  <datalist id="townList"></datalist>
+</div>
+
+<!-- AGENT ACTIVITY -->
+<div class="page" id="page-agents">
+  <div class="card">
+    <h2>🧠 <span data-i18n="agents_title">Agent Activity</span></h2>
+    <div class="hint" data-i18n="agents_hint">Press ORCA ANALYZE on the Dashboard to run the multi-agent reasoning workflow.</div>
+    <div class="agent-list" id="agentList"></div>
+  </div>
+  <div class="card" id="llmPanelCard" style="display:none;">
+    <h2>🤖 <span data-i18n="llm_panel_title">AI Multi-Agent Panel</span></h2>
+    <div class="hint" data-i18n="llm_panel_hint">A separate AI reviews the same real numbers above and gives its own opinion — independent of the rule-based recommendation.</div>
+    <div class="agent-list" id="llmAgentList"></div>
+    <div class="llm-summary" id="llmSummaryBox" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- TRIP PLANNER -->
+<div class="page" id="page-tripplanner">
+  <div class="card" id="tripPlannerCard">
+    <h2>🗓️ <span data-i18n="trip_title">Trip Planner</span></h2>
+    <div class="hint" data-i18n="trip_hint">Plan ahead using Open-Meteo's real hourly forecast for your selected location. Safety assessment uses the worst hour in your window, not the average. Beyond the forecast horizon (~15 days) or if the forecast can't be fetched, this clearly falls back to a simulated estimate.</div>
+    <div class="threecol" style="margin-top:12px;">
+      <div><label data-i18n="lbl_trip_date">Departure date</label><input type="date" id="tripDate"></div>
+      <div><label data-i18n="lbl_trip_time">Departure time</label><input type="time" id="tripTime" value="06:00"></div>
+      <div><label data-i18n="lbl_trip_duration">Trip duration (hours)</label><input type="number" id="tripDuration" min="1" max="24" value="6"></div>
+    </div>
+    <button class="btn block" id="planTripBtn" data-i18n="btn_plan_trip">Plan Trip</button>
+    <div id="tripResultBox" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div class="page" id="page-compare">
+  <div class="card">
+    <h2>⚖️ <span data-i18n="compare_title">Compare Zones</span></h2>
+    <div class="hint" data-i18n="compare_hint">Select up to 3 locations to compare, independently of ORCA Assistant.</div>
+    <div class="compare-select" id="compareSelect"></div>
+    <button class="btn block" id="compareBtn" data-i18n="btn_compare">Compare Selected Locations</button>
+    <div id="compareResult"></div>
+  </div>
+
+  <div class="card" id="pinCompareCard">
+    <h2>📍 <span data-i18n="pincompare_title">Pinned Map Locations</span></h2>
+    <div class="hint" data-i18n="pincompare_hint">On the Dashboard, tap "Add Pin" and mark several spots on the map — they'll stack up here so you can search, pick, and compare them.</div>
+    <div class="row" style="margin-top:10px;">
+      <input type="text" id="pinSearchInput" data-i18n-ph="ph_pin_search" placeholder="Search pinned locations...">
+    </div>
+    <div class="pin-stack" id="pinStackBox"></div>
+    <button class="btn block" id="comparePinsBtn" style="margin-top:12px;">⚖️ <span data-i18n="btn_compare_pins">Compare Pinned Locations</span></button>
+    <div id="pinCompareResult"></div>
+  </div>
+</div>
+
+<!-- SAFETY -->
+<div class="page" id="page-safety">
+  <div class="card">
+    <h2>🛟 <span data-i18n="safety_title">Safety & Route</span></h2>
+    <label data-i18n="safety_checklist">Departure checklist</label>
+    <ul class="checklist" id="checklist"></ul>
+    <button class="btn secondary block" id="routeBtn" data-i18n="btn_route">Show Safer Route</button>
+    <div class="hint" style="margin-top:10px" data-i18n="route_disclaimer">Suggested route only — not official navigation.</div>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="page" id="page-alerts">
+  <div class="card">
+    <h2>🔔 <span data-i18n="alerts_title">Marine Alerts</span></h2>
+    <div class="hint" data-i18n="alerts_hint">Generated from the current zones around your selected location.</div>
+    <div id="alertsBox" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<!-- SPECIES INTELLIGENCE (Part 6, item 3) -->
+<div class="page" id="page-species">
+  <div class="card">
+    <h2>🐟 <span data-i18n="species_title">Species Intelligence</span></h2>
+    <div class="hint" data-i18n="species_hint">Historical/regional presence by state and coast, based on general fisheries records — not exact live GPS sightings. Select a species and check it against your currently selected location.</div>
+    <div class="threecol" style="margin-top:12px;">
+      <div style="flex:1 1 260px;">
+        <label data-i18n="species_select_label">Species</label>
+        <select id="speciesSelect"></select>
+      </div>
+    </div>
+    <button class="btn block" id="speciesSearchBtn" data-i18n="btn_species_search" style="margin-top:10px;">Check This Location</button>
+    <div id="speciesResultBox" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<!-- DATA SOURCES -->
+<div class="page" id="page-sources">
+  <div class="card">
+    <h2>📚 <span data-i18n="sources_title">Data Sources</span></h2>
+    <div class="hint" data-i18n="sources_hint">This page clearly shows which data below is live and which is an estimate.</div>
+
+    <h3>🩺 <span data-i18n="health_check_btn">Check Data Sources Now</span></h3>
+    <div class="hint" data-i18n="health_intro">Live check of whether each external data source is actually reachable right now — not a claim, a real timed request to each one.</div>
+    <button class="btn secondary" id="healthCheckBtn">🩺 <span data-i18n="health_check_btn">Check Data Sources Now</span></button>
+    <div id="healthBox" style="margin-top:12px;"></div>
+
+    <h3 style="margin-top:22px;">📚 <span data-i18n="sources_title">Data Sources</span></h3>
+    <div class="datasrc">
+      <div class="card"><span class="badge" data-i18n="src_live">LIVE MAP</span><h3>OpenStreetMap / Leaflet</h3><p data-i18n="src_map_desc">Used for interactive map display and tiles.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_geo">LIVE / API</span><h3 data-i18n="src_geo_h">Place Search</h3><p data-i18n="src_geo_desc">Any place name is geocoded live via OpenStreetMap Nominatim — not limited to a fixed town list.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_satellite">LIVE / SATELLITE (optional backend)</span><h3 data-i18n="src_satellite_h">Fishing Suitability — Satellite tier</h3><p data-i18n="src_satellite_desc">When the included Python backend (backend/main.py) is running, fish-suitability is computed from REAL satellite Sea-Surface Temperature and Chlorophyll-a (NOAA CoastWatch ERDDAP) — the same two signals INCOIS's official PFZ advisories are built on. Without the backend running, this falls back to the Weather-only tier below, then to the fully simulated tier — check the SATELLITE / LIVE / SIM badge on each zone card to see which applied.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_liveapi">LIVE / API (fallback: estimate)</span><h3 data-i18n="src_weather">Weather & Waves</h3><p data-i18n="src_weather_desc">Wind, sea-surface temperature and wave height are fetched live from Open-Meteo where available; falls back to an estimated value if the request fails.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_proto">ESTIMATED</span><h3 data-i18n="src_dataset">ORCA Fishing Suitability</h3><p data-i18n="src_dataset_desc">Fallback fish-suitability score used only when neither the satellite backend nor Open-Meteo are reachable.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_treaty">TREATY-BASED</span><h3 data-i18n="src_boundary">Boundary Data</h3><p data-i18n="src_boundary_desc">India–Sri Lanka line uses the real coordinate points from the 1974 Palk Strait and 1976 Gulf of Mannar agreements. State boundary lines are a rough coastal-latitude approximation. Neither is a substitute for an official chart — always verify with authorities.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_sim">ESTIMATED</span><h3 data-i18n="src_family">Family Alerts</h3><p data-i18n="src_family_desc">SMS/call notifications are logged only — no real message or call is sent by this app yet.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_cyclone">HEURISTIC</span><h3 data-i18n="src_cyclone_h">Cyclone Intelligence</h3><p data-i18n="src_cyclone_desc">The storm-risk number uses real live wind, pressure and wave data (same Open-Meteo source as elsewhere), combined into a simple heuristic — not real cyclone detection or tracking. Always check IMD and INCOIS directly for official cyclone warnings.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_geo_bearing">REAL GEOGRAPHY</span><h3 data-i18n="src_geo_bearing_h">Seaward Candidate Zones</h3><p data-i18n="src_geo_bearing_desc">Candidate zone bearings are constrained to a realistic seaward cone based on which Indian coast (Bay of Bengal or Arabian Sea) the selected point is on, instead of a uniformly random 0-360° bearing that could occasionally point back toward land.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_harbors">REFERENCE</span><h3 data-i18n="src_harbors_h">Known Fishing Harbors</h3><p data-i18n="src_harbors_desc">A small curated list of real, publicly known major Indian fishing harbors, shown as map markers and a "nearest harbor" fact. General-knowledge positions, not survey-grade coordinates and not a live feed.</p></div>
+      <div class="card"><span class="badge" data-i18n="src_realdataset">REAL DATASET (simplified)</span><h3 data-i18n="src_geodata_h">State Boundaries & Water Bodies</h3><p data-i18n="src_geodata">Real, public GADM-derived India state/UT boundaries and Natural Earth lakes & rivers, simplified and clipped to India — community/public-domain geographic datasets, not official survey charts.</p></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- FLOATING CHAT WIDGET — one "Talk to ORCA" assistant available from every
+     page, instead of duplicating the chat box on the Dashboard and Border
+     card. Fixed-position, toggled open/closed by the round button. -->
+<button class="chat-fab" id="chatFab" title="Talk to ORCA">🤖</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+    <span>🤖 <span data-i18n="chat_title">Talk to ORCA</span></span>
+    <button class="close" id="chatPanelClose">✕</button>
+  </div>
+  <div class="hint" style="margin:8px 12px 0;" data-i18n="chat_dash_hint">Ask about this map directly — fishing zones and border risk together, e.g. "how far am I from the border?" or "which zone is safer?"</div>
+  <div class="chatbox" id="chatBoxFloat" style="margin:8px 12px;"></div>
+  <div class="chat-input-row" style="margin:0 12px 12px;">
+    <input type="text" id="chatInputFloat" data-i18n-ph="chat_ph" placeholder="Type your question... e.g. How far am I from the border?">
+    <button class="icon-btn" id="micBtnFloat" title="Voice input">🎤</button>
+    <button class="btn" id="sendChatFloatBtn" data-i18n="btn_send">SEND</button>
+  </div>
+  <div class="hint" id="voiceHintFloat" style="margin:0 12px 10px;"></div>
+</div>
+
+<footer data-i18n="footer">ORCA Marine Intelligence — real-time marine safety assistant for fishermen.</footer>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <button class="close" id="closeSettings">✕</button>
+    <h2>⚙ <span data-i18n="settings_title">Settings</span></h2>
+
+    <label data-i18n="settings_lang">Language</label>
+    <select id="langSelect">
+      <option value="en">English</option>
+      <option value="ta">தமிழ் (Tamil)</option>
+      <option value="te">తెలుగు (Telugu)</option>
+      <option value="kn">ಕನ್ನಡ (Kannada)</option>
+      <option value="ml">മലയാളം (Malayalam)</option>
+      <option value="hi">हिन्दी (Hindi)</option>
+    </select>
+
+    <label data-i18n="settings_theme">Appearance</label>
+    <select id="themeSelect">
+      <option value="dark" data-i18n="theme_dark_opt">Dark</option>
+      <option value="light" data-i18n="theme_light_opt">Light</option>
+    </select>
+
+    <hr style="border-color:var(--border);margin:16px 0;">
+    <h3>📍 <span data-i18n="settings_tracking">Location Tracking</span></h3>
+    <div class="togglerow"><span data-i18n="settings_live">Live Tracking</span>
+      <label class="switch"><input type="checkbox" id="chkLive"><span class="slider"></span></label></div>
+    <div class="hint" data-i18n="settings_interval_note">Updates roughly every 1 second while active, subject to GPS/browser availability.</div>
+
+    <hr style="border-color:var(--border);margin:16px 0;">
+    <h3>🛡️ <span data-i18n="settings_border_alerts">Border Alerts</span></h3>
+    <div class="togglerow"><span data-i18n="settings_border_toggle">Border Alerts</span>
+      <label class="switch"><input type="checkbox" id="chkBorderAlerts" checked><span class="slider"></span></label></div>
+    <div class="togglerow"><span data-i18n="settings_voice_toggle">Voice Alerts</span>
+      <label class="switch"><input type="checkbox" id="chkVoiceAlerts"><span class="slider"></span></label></div>
+
+    <hr style="border-color:var(--border);margin:16px 0;">
+    <h3>⚠️ <span data-i18n="settings_thresholds">Warning Distance (km)</span></h3>
+    <div class="threecol">
+      <div><label data-i18n="settings_warning">Warning</label><input type="number" id="thWarning" value="5" min="1"></div>
+      <div><label data-i18n="settings_highwarning">High Warning</label><input type="number" id="thHigh" value="3" min="1"></div>
+      <div><label data-i18n="settings_critical">Critical</label><input type="number" id="thCritical" value="1" min="0.1" step="0.1"></div>
+    </div>
+
+    <hr style="border-color:var(--border);margin:16px 0;">
+    <h3>👪 <span data-i18n="settings_family">Emergency & Family Contacts</span></h3>
+    <div class="hint" data-i18n="settings_family_note">Saved on this device only — no real SMS/call is sent yet.</div>
+    <label data-i18n="settings_your_name">Your name</label>
+    <input type="text" id="nameSelf" data-i18n-ph="ph_your_name" placeholder="e.g. Ravi Kumar">
+    <label data-i18n="settings_self_phone">Your phone number</label>
+    <input type="tel" id="phoneSelf" placeholder="+91 XXXXX XXXXX">
+    <label data-i18n="settings_family1_name">Family contact 1 — name</label>
+    <input type="text" id="nameFamily1" data-i18n-ph="ph_contact_name" placeholder="e.g. Father">
+    <label data-i18n="settings_family1">Family contact 1 — phone</label>
+    <input type="tel" id="phoneFamily1" placeholder="+91 XXXXX XXXXX">
+    <label data-i18n="settings_family2_name">Family contact 2 — name</label>
+    <input type="text" id="nameFamily2" data-i18n-ph="ph_contact_name" placeholder="e.g. Mother">
+    <label data-i18n="settings_family2">Family contact 2 — phone</label>
+    <input type="tel" id="phoneFamily2" placeholder="+91 XXXXX XXXXX">
+
+    <hr style="border-color:var(--border);margin:16px 0;">
+    <h3>🚤 <span data-i18n="settings_community">Nearby Fishermen</span></h3>
+    <div class="togglerow"><span data-i18n="settings_share_location">Share My Location</span>
+      <label class="switch"><input type="checkbox" id="chkShareLocation"><span class="slider"></span></label></div>
+    <div class="hint" data-i18n="settings_share_location_hint">When on, your name, phone number and current position become visible to other fishermen connected to the same ORCA server, so they can find and call you. Requires your name and phone number above.</div>
+
+    <hr style="border-color:var(--border);margin:16px 0;">
+    <h3 data-i18n="settings_login">Login</h3>
+    <label data-i18n="settings_country">Country</label>
+    <select id="countrySelect"><option>India</option></select>
+    <label data-i18n="settings_state">State</label>
+    <select id="stateSelect">
+      <option>Tamil Nadu</option><option>Andhra Pradesh</option><option>Puducherry</option>
+      <option>Kerala</option><option>Karnataka</option><option>Goa</option><option>Maharashtra</option>
+      <option>Gujarat</option><option>Odisha</option><option>West Bengal</option>
+      <option>Andaman & Nicobar</option><option>Lakshadweep</option>
+    </select>
+    <div class="hint" data-i18n="settings_state_hint">Selecting a state highlights its full boundary on the Dashboard map.</div>
+    <label data-i18n="settings_phone">Login Phone Number</label>
+    <input type="tel" id="phoneInput" placeholder="+91 XXXXX XXXXX">
+    <button class="btn block" id="loginBtn" data-i18n="btn_continue">Continue with Phone</button>
+    <div class="small-note" data-i18n="login_note">No OTP is sent yet — phone verification is not yet connected.</div>
+    <button class="btn secondary block" id="saveSettingsBtn" data-i18n="btn_save">Save Settings</button>
+  </div>
+</div>
+
+<!-- EMERGENCY MODAL -->
+<div class="modal-overlay" id="emgModal">
+  <div class="modal">
+    <button class="close" id="closeEmg">✕</button>
+    <h2 style="color:var(--red);">🚨 <span data-i18n="emg_title">Critical Marine Incident</span></h2>
+    <div class="hint"><span data-i18n="emg_loc">Last known location</span>: <b id="emgLoc">—</b></div>
+    <div class="emg-body" id="emgSteps"></div>
+    <div class="family-log" id="emgCalling" style="margin-top:10px;"></div>
+    <div class="small-note" data-i18n="emg_note">No emergency call is placed automatically — contact local Coast Guard or emergency services directly.</div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="geodata.js"></script>
+<script src="app.js"></script>
+<script>
+  // Register the offline app-shell service worker — only over http(s), never
+  // on a plain file:// open (service workers require a real origin) and
+  // never if it fails, so this can't break anything for anyone.
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>

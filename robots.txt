@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://harshavardhansai9154.github.io/orca-marine-intelligence/sitemap.xml
